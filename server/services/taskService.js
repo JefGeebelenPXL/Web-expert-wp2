@@ -13,6 +13,10 @@ async function findByUserId(requestingUserId) {
     return Task.find({userId: requestingUserId});
 }
 
+async function findAll() {
+    return Task.find({});
+}
+
 async function updateTask(taskId, requestingUserId, {completed, todo, userId}) {
     if (!isValidId(taskId)) {
         throw new ValidationError('Id is not valid');
@@ -43,4 +47,4 @@ async function updateTask(taskId, requestingUserId, {completed, todo, userId}) {
     return task.save({validateBeforeSave: false});
 }
 
-module.exports = {findByUserId, updateTask};
+module.exports = {findByUserId, updateTask, findAll};

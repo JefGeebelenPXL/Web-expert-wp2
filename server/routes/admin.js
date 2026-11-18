@@ -11,4 +11,11 @@ router.get("/tasks",
     adminController.getAllTasks
 );
 
+router.get("/users",
+    cookieParser(),
+    authenticate,
+    authorize('admin'),
+    adminController.getAllUsers
+);
+
 module.exports = router;

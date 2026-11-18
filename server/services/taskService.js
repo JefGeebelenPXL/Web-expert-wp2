@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const {ValidationError, AuthorisationError, NotFoundError} = require("../errors/error");
 
 const Task = require("../models/taskModel.js");
+const User = require("../models/userModel.js");
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const isValidId = (id) => UUID_REGEX.test(id);
@@ -47,4 +48,23 @@ async function updateTask(taskId, requestingUserId, {completed, todo, userId}) {
     return task.save({validateBeforeSave: false});
 }
 
-module.exports = {findByUserId, updateTask, findAll};
+async function assignTask(taskId, userId) {
+    if (!isValidId(taskId) || !isValidId(userId)) {
+        throw new ValidationError('Id is not valid');
+    }
+
+    const task = await Task.findById(taskId);
+    if (!task) {
+        throw new NotFoundError('Task not found');
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+        throw new NotFoundError('User not found');
+    }
+
+    task.userId = userId;
+    return task.save();
+}
+
+module.exports = {findByUserId, updateTask, findAll, assignTask};

@@ -19,5 +19,16 @@ async function getAllUsers (req, res, next) {
     }
 };
 
+async function assignTask (req, res, next) {
+    try {
+        const {taskId} = req.params;
+        const {userId} = req.body;
+        const task = await taskService.assignTask(taskId, userId);
+        res.status(200).json(task);
+    } catch (err) {
+        next(err);
+    }
+};
 
-module.exports = {getAllTasks, getAllUsers};
+
+module.exports = {getAllTasks, getAllUsers, assignTask};

@@ -4,13 +4,20 @@ import { reactive, ref } from 'vue';
 
 const securityUrl = 'http://localhost:3000/security';
 const taskUrl = 'http://localhost:3000/task';
+const adminUrl = 'http://localhost:3000/admin';
 
 export const useStore = defineStore('store', {
     state: () => ({
         user: {},
         tasks: [],
+        allTasks: [],
+        users: [],
         loading: false
     }),
+
+    getters: {
+        isAdmin: (state) => state.user.roles?.includes('admin') ?? false
+    },
 
     actions: {
         async login(credentials) {
@@ -84,6 +91,45 @@ export const useStore = defineStore('store', {
                 throw new Error(error.message || 'Failed to retrieve tasks');
             } finally {
                 this.loading = false;
+            }
+        },
+
+        // ---------- admin ----------
+
+        async retrieveAllTasks() {
+            this.loading = true;
+            try {
+                const axiosConfig = {withCredentials: true};
+                const response = await axios.get(`${adminUrl}/tasks`, axiosConfig);
+                this.allTasks = response.data;
+            } catch (error) {
+                throw new Error(error.response?.data?.error?.message || 'Failed to retrieve all tasks');
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        async retrieveAllUsers() {
+            this.loading = true;
+            try {
+                const axiosConfig = {withCredentials: true};
+                const response = await axios.get(`${adminUrl}/users`, axiosConfig);
+                this.users = response.data;
+            } catch (error) {
+                throw new Error(error.response?.data?.error?.message || 'Failed to retrieve users');
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        async assignTask(taskId, userId) {
+            try {
+                const axiosConfig = {withCredentials: true};
+                const response = await axios.patch(`${adminUrl}/tasks/${taskId}/assign`, {userId}, axiosConfig);
+                const index = this.allTasks.findIndex(task => task._id === taskId);
+                this.allTasks[index] = response.data;
+            } catch (error) {
+                throw new Error(error.response?.data?.error?.message || 'Failed to assign task');
             }
         }
     }

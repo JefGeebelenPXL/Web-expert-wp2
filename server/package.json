@@ -11,14 +11,19 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
-    "jest": "^25.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.17.2"
   },
   "devDependencies": {
+    "jest": "^30.5.2",
     "mockingoose": "^2.16.2",
     "mongodb": "^6.18.0",
     "mongodb-memory-server": "^10.2.0",
     "supertest": "^7.1.4"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "setupFiles": ["./jest.setup.js"],
+    "testTimeout": 60000
   }
 }

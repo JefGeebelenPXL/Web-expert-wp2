@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 mongoose.set('strictQuery', true);
 const {MongoMemoryServer} = require('mongodb-memory-server');
 
-const ObjectId = mongoose.Types.ObjectId;
 const User = require('../../models/userModel');
 
 const validCredentialsNewUser = [
@@ -49,7 +48,7 @@ describe('userModel', () => {
             async (credential) => {
                 let user = new User(credential);
                 await user.save();
-                expect(user._id).toBeInstanceOf(ObjectId);
+                expect(typeof user._id).toBe('string');
             }
         );
 

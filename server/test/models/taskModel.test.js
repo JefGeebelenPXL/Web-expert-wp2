@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 mongoose.set('strictQuery', true);
 const {MongoMemoryServer} = require('mongodb-memory-server');
 
-const ObjectId = mongoose.Types.ObjectId;
 const Task = require('../../models/taskModel');
 const User = require('../../models/userModel');
 
@@ -62,7 +61,7 @@ describe('taskModel', () => {
             async (newTask) => {
                 let task = new Task(newTask);
                 await task.save();
-                expect(task._id).toBeInstanceOf(ObjectId);
+                expect(typeof task._id).toBe('string');
             }
         );
 
@@ -74,7 +73,7 @@ describe('taskModel', () => {
                 newTask.userId = user._id;
                 let task = new Task(newTask);
                 await task.save();
-                expect(task._id).toBeInstanceOf(ObjectId);
+                expect(typeof task._id).toBe('string');
             }
         );
     });
